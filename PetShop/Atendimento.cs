@@ -2,7 +2,7 @@
 {
     internal class Atendimento
     {
-        private readonly int proximoId = 1;
+        private static int proximoId = 1;
         public int Id {get; private set;}
         public Animal Animal { get; set; }
         public string? Servico { get; set; }

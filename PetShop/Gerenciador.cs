@@ -1,9 +1,11 @@
-﻿namespace PetShop
+﻿using PetShop;
+
+namespace PetShop
 {
     internal class Gerenciador
     {
         private static List<Tutor> tutores = new();
-        private static List<Animal> animais = new();
+        internal static List<Animal> animais = new();
         public static void CadastrarTutor()
         {
             Console.WriteLine("----- Cadastro do tutor -----\n");
@@ -37,26 +39,26 @@
 
         public static void ListaDePets()
         {
-            Console.WriteLine("----- Lista de pets cadastrados -----\n");
-            if (animais.Count > 0)
-            {
-                Console.WriteLine("{0,-5} | {1,-15} | {2,-12} | {3,-15} | {4,-10}",
-                    "ID", "Tutor", "Telefone", "Nome do Pet", "Espécie");
-                Console.WriteLine(new string('-', 70));
+            Console.WriteLine("----- Lista de pets -----\n");
 
-                foreach (var animal in animais)
-                {
-                    Console.WriteLine("{0,-5} | {1,-15} | {2,-12} | {3,-15} | {4,-10}",
-                        animal.Id,
-                        animal.Tutor.Nome,
-                        animal.Tutor.Telefone,
-                        animal.Nome,
-                        animal.Especie);
-                }
-            }
-            else
+            if (animais.Count == 0)
             {
                 Console.WriteLine("Não há pets cadastrados.");
+                return;
+            }
+
+            Console.WriteLine("{0,-4} | {1,-18} | {2,-16} | {3,-22} | {4,-16}",
+         "ID", "Tutor", "Telefone", "Nome do Pet", "Espécie");
+            Console.WriteLine(new string('-', 80));
+
+            foreach (var animal in animais)
+            {
+                Console.WriteLine("{0,-4} | {1,-18} | {2,-16} | {3,-22} | {4,-16}",
+                    animal.Id,
+                    animal.Tutor.Nome,
+                    animal.Tutor.Telefone,
+                    animal.Nome,
+                    animal.Especie);
             }
         }
 
@@ -70,7 +72,7 @@
                 return;
             }
 
-            ListaDePets();
+            ObterAnimaisDisponiveisParaFila();
 
             int id = Utils.LerEntrada<int>("\nInsira o ID do pet que deseja cadastrar na fila de atendimento: ");
             Animal? animalEncontrado = animais.FirstOrDefault(a => a.Id == id);
@@ -81,16 +83,20 @@
                 return;
             }
 
-            ListaDeAtendimento.AdicionarAnimalAFila(animalEncontrado, AdicionarTipoDeServico());
+            FilaDeAtendimento.AdicionarAnimalAFila(animalEncontrado, AdicionarTipoDeServico());
         }
 
         private static string AdicionarTipoDeServico()
         {
             Console.WriteLine("\nQual o tipo de serviço?");
-            Console.WriteLine("\nID\tServiço");
+            Console.WriteLine("\nID".PadRight(5) + "Serviço".PadRight(73));
+            Console.WriteLine(new string('-', 80));
+
             foreach (var servico in Servicos.ServicosPetShop)
             {
-                Console.WriteLine($"{servico.Key}\t{servico.Value}");
+                Console.WriteLine(
+                    $"{servico.Key.ToString().PadRight(5)}{servico.Value.PadRight(73)}"
+                );
             }
 
             int idServico = Utils.LerEntrada<int>("\nDigite o ID do serviço: ");
@@ -102,7 +108,32 @@
 
         public static void ListaDaFilaDeAtendimento()
         {
-            ListaDeAtendimento.ListarFila();
+            FilaDeAtendimento.ListarFila();
+        }
+
+        public static void ObterAnimaisDisponiveisParaFila()
+        {
+            var animaisNaFila = new HashSet<int>(FilaDeAtendimento.fila.Select(f => f.Animal.Id));
+            var animaisDisponiveis = animais.Where(a => !animaisNaFila.Contains(a.Id)).ToList();
+
+            Console.WriteLine(
+          "ID".PadRight(5) +
+          "Nome".PadRight(22) +
+          "Tutor".PadRight(25) +
+          "Espécie".PadRight(24)
+      );
+            Console.WriteLine(new string('-', 80));
+
+            foreach (var animal in animaisDisponiveis)
+            {
+                Console.WriteLine(
+                    animal.Id.ToString().PadRight(5) +
+                    animal.Nome.PadRight(22) +
+                    animal.Tutor.Nome.PadRight(25) +
+                    animal.Especie.PadRight(24)
+                );
+            }
         }
     }
 }
+
