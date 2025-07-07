@@ -2,13 +2,14 @@
 {
     internal class FilaDeAtendimento
     {
-        internal static readonly Queue<Atendimento> fila = new();
+        private static readonly Queue<Atendimento> fila = new();
 
         public static void AdicionarAnimalAFila(Animal animal, string servico)
         {
             if (animal == null)
             {
                 Console.WriteLine("Pet não encontrado ou inexistente.");
+                return;
             }
 
             fila.Enqueue(new Atendimento(animal!, servico));
@@ -39,11 +40,31 @@
             }
         }
 
-        private static void AtenderProximo()
+        public static Atendimento? AtenderProximo()
         {
-            Atendimento proximoAtendimento = fila.Dequeue();
-            Animal animal = proximoAtendimento.Animal;
-            Console.WriteLine($"Próximo atendimento {animal.Nome}\tTutor: {animal.Tutor.Nome}");
+
+            if (fila.Count == 0)
+            {
+                return null;
+            }
+            return fila.Dequeue();
+
+        }
+
+        public static bool EstaNaFila(Animal animal)
+        {
+            return fila.Any(f => f.Animal.Id == animal.Id);
+        }
+
+        public static List<Animal> ObterDisponiveis(List<Animal> todosOsAnimais)
+        {
+            var animaisNaFila = fila.Select(f => f.Animal.Id).ToHashSet();
+            return todosOsAnimais.Where(a => !animaisNaFila.Contains(a.Id)).ToList();
+        }
+
+        public static bool FilaEstaVazia()
+        {
+            return fila.Count == 0;
         }
     }
 }

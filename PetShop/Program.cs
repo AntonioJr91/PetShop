@@ -9,6 +9,7 @@ while (true)
     Console.WriteLine("3. Listar pets");
     Console.WriteLine("4. Adicionar pet na lista de atendimento");
     Console.WriteLine("5. Listar fila de atendimento dos pets");
+    Console.WriteLine("6. Atender próximo pet");
     Console.WriteLine("0. Sair");
     string? opcao = Console.ReadLine();
 
@@ -41,6 +42,11 @@ while (true)
         case "5":
             Console.Clear();
             Gerenciador.ListaDaFilaDeAtendimento();
+            break;
+
+        case "6":
+            Console.Clear();
+            Gerenciador.AtenderProximoPet();
             break;
 
         default:

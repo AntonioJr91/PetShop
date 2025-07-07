@@ -1,6 +1,6 @@
 ﻿namespace PetShop
 {
-    internal class Animal
+    internal class Animal : IExibir
     {
         public string Nome { get; set; }
         public string Especie { get; set; }
@@ -15,6 +15,11 @@
             Nome = nome;
             Especie = especie;
             Tutor = tutor;
+        }
+
+        public void ExibirDetalhes()
+        {
+            Console.WriteLine($"{Id,-2} | {Nome,-16} | {Especie,-20} | {Tutor.Nome,-20} | {Tutor.Telefone, -20}");
         }
 
     }

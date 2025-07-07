@@ -47,18 +47,12 @@ namespace PetShop
                 return;
             }
 
-            Console.WriteLine("{0,-4} | {1,-18} | {2,-16} | {3,-22} | {4,-16}",
-         "ID", "Tutor", "Telefone", "Nome do Pet", "Espécie");
+            Console.WriteLine("{0, -2} | {1, -16} | {2, -20} | {3, -20} | {4, -20}", "ID", "Nome do Pet", "Espécie", "Tutor", "Telefone");
             Console.WriteLine(new string('-', 80));
 
-            foreach (var animal in animais)
+            foreach (IExibir item in animais)
             {
-                Console.WriteLine("{0,-4} | {1,-18} | {2,-16} | {3,-22} | {4,-16}",
-                    animal.Id,
-                    animal.Tutor.Nome,
-                    animal.Tutor.Telefone,
-                    animal.Nome,
-                    animal.Especie);
+                item.ExibirDetalhes();
             }
         }
 
@@ -74,12 +68,18 @@ namespace PetShop
 
             ObterAnimaisDisponiveisParaFila();
 
-            int id = Utils.LerEntrada<int>("\nInsira o ID do pet que deseja cadastrar na fila de atendimento: ");
+            int id = Utils.LerEntrada<int>("\nInsira o ID do pet que deseja cadastrar na fila de atendimento");
             Animal? animalEncontrado = animais.FirstOrDefault(a => a.Id == id);
 
             if (animalEncontrado == null)
             {
                 Console.WriteLine("ID inválido!");
+                return;
+            }
+
+            if (FilaDeAtendimento.EstaNaFila(animalEncontrado))
+            {
+                Console.WriteLine("Este pet já está na fila de atendimento");
                 return;
             }
 
@@ -113,15 +113,14 @@ namespace PetShop
 
         public static void ObterAnimaisDisponiveisParaFila()
         {
-            var animaisNaFila = new HashSet<int>(FilaDeAtendimento.fila.Select(f => f.Animal.Id));
-            var animaisDisponiveis = animais.Where(a => !animaisNaFila.Contains(a.Id)).ToList();
+            List<Animal> animaisDisponiveis = FilaDeAtendimento.ObterDisponiveis(animais);
 
             Console.WriteLine(
-          "ID".PadRight(5) +
-          "Nome".PadRight(22) +
-          "Tutor".PadRight(25) +
-          "Espécie".PadRight(24)
-      );
+                "ID".PadRight(5) +
+                "Nome".PadRight(22) +
+                "Tutor".PadRight(25) +
+                "Espécie".PadRight(24)
+            );
             Console.WriteLine(new string('-', 80));
 
             foreach (var animal in animaisDisponiveis)
@@ -134,6 +133,38 @@ namespace PetShop
                 );
             }
         }
+
+        public static void AtenderProximoPet()
+        {
+            Console.WriteLine("----- Próximo Atendimento -----\n");
+
+            var atendimento = FilaDeAtendimento.AtenderProximo();
+
+            if (atendimento == null)
+            {
+                Console.WriteLine("\nNão há pets na fila de atendimento.");
+                return;
+            }
+
+            Animal animal = atendimento.Animal;
+
+            Console.WriteLine("----- Próximo Atendimento -----\n");
+            Console.WriteLine("{0,-20} | {1,-20} | {2,-20} | {3,-15}",
+                "Nome do Pet", "Nome do Tutor", "Telefone", "Serviço");
+            Console.WriteLine(new string('-', 80));
+
+            Console.WriteLine("{0,-20} | {1,-20} | {2,-20} | {3,-15}",
+                animal.Nome,
+                animal.Tutor.Nome,
+                animal.Tutor.Telefone,
+                atendimento.Servico
+            );
+
+            Console.Write("\nPressione qualquer tecla para atualizar a lista de atendimento . . .\n");
+            Console.ReadKey();
+
+            Console.Clear();
+            FilaDeAtendimento.ListarFila();
+        }
     }
 }
-
