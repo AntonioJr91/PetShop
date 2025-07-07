@@ -6,27 +6,18 @@
 
         public static void AdicionarAnimalAFila(Animal animal, string servico)
         {
-            if (animal == null) return;
-
-            fila.Enqueue(new Atendimento(animal!, servico));
+            fila.Enqueue(new Atendimento(animal, servico));
         }
 
-        public static Queue<Atendimento>? ListarFila()
-        {
-            if (fila.Count == 0) return null;
-
-            return fila;
-        }
+        public static Queue<Atendimento> ObterFilaAtual() => fila;
 
         public static Atendimento? AtenderProximo()
         {
-
             if (fila.Count == 0)
             {
                 return null;
             }
             return fila.Dequeue();
-
         }
 
         public static bool EstaNaFila(Animal animal)

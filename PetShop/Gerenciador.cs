@@ -66,7 +66,7 @@ namespace PetShop
                 return;
             }
 
-            ObterAnimaisDisponiveisParaFila();
+            ExibeAnimaisDisponiveisParaFila();
 
             int id = Utils.LerEntrada<int>("\nInsira o ID do pet que deseja cadastrar na fila de atendimento");
             Animal? animalEncontrado = animais.FirstOrDefault(a => a.Id == id);
@@ -110,9 +110,9 @@ namespace PetShop
         {
             Console.WriteLine("----- Fila de Atendimento -----\n");
 
-            Queue<Atendimento> fila = FilaDeAtendimento.ListarFila()!;
+            Queue<Atendimento> fila = FilaDeAtendimento.ObterFilaAtual()!;
 
-            if (fila == null)
+            if (fila.Count == 0)
             {
                 Console.WriteLine("Fila de atendimento está vazia.");
                 return;
@@ -133,7 +133,7 @@ namespace PetShop
             }
         }
 
-        public static void ObterAnimaisDisponiveisParaFila()
+        public static void ExibeAnimaisDisponiveisParaFila()
         {
             List<Animal> animaisDisponiveis = FilaDeAtendimento.ObterDisponiveis(animais);
 
