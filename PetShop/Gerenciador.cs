@@ -108,7 +108,29 @@ namespace PetShop
 
         public static void ListaDaFilaDeAtendimento()
         {
-            FilaDeAtendimento.ListarFila();
+            Console.WriteLine("----- Fila de Atendimento -----\n");
+
+            Queue<Atendimento> fila = FilaDeAtendimento.ListarFila()!;
+
+            if (fila == null)
+            {
+                Console.WriteLine("Fila de atendimento está vazia.");
+                return;
+            }
+
+            Console.WriteLine("\n{0,-4} | {1,-16} | {2,-16} | {3,-38}",
+              "#", "Nome do Animal", "Nome do Tutor", "Serviço");
+            Console.WriteLine(new string('-', 80));
+
+            foreach (var atendimento in fila)
+            {
+                Console.WriteLine("{0,-4} | {1,-16} | {2,-16} | {3,-38}",
+                    atendimento.Id,
+                    atendimento.Animal.Nome,
+                    atendimento.Animal.Tutor.Nome,
+                    atendimento.Servico
+                );
+            }
         }
 
         public static void ObterAnimaisDisponiveisParaFila()
@@ -148,7 +170,6 @@ namespace PetShop
 
             Animal animal = atendimento.Animal;
 
-            Console.WriteLine("----- Próximo Atendimento -----\n");
             Console.WriteLine("{0,-20} | {1,-20} | {2,-20} | {3,-15}",
                 "Nome do Pet", "Nome do Tutor", "Telefone", "Serviço");
             Console.WriteLine(new string('-', 80));
@@ -160,11 +181,11 @@ namespace PetShop
                 atendimento.Servico
             );
 
-            Console.Write("\nPressione qualquer tecla para atualizar a lista de atendimento . . .\n");
+            Console.Write("\nPressione qualquer tecla para atualizar a lista de atendimento . . . ");
             Console.ReadKey();
 
             Console.Clear();
-            FilaDeAtendimento.ListarFila();
+            ListaDaFilaDeAtendimento();
         }
     }
 }
